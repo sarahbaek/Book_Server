@@ -41,7 +41,7 @@ namespace Book_Server
             #endregion
         }
 
-        #region Method: HandleClient()
+            #region Method: HandleClient()
         /// <summary>
         /// Here we handle all the requests coming from the client, like when the client asks to see what is in the server, tries to get a secific item or tries to save an item
         /// </summary>
@@ -79,7 +79,7 @@ namespace Book_Server
 
         #endregion
 
-        #region Method: Get ALL()
+            #region Method: Get ALL()
         //Handles the information coming from the client
         /// <summary>
         /// GetAll returns a list of books as a JsonString,     //GetAll //all books from the server, line two is empty e.g. Retrieve All
@@ -93,7 +93,7 @@ namespace Book_Server
         }
         #endregion
 
-        #region Method: Get()
+            #region Method: Get()
         /// <summary>
         /// Get - takes in an ISBN!3 string and returns a book as a JsonString
         /// </summary>
@@ -108,7 +108,7 @@ namespace Book_Server
         }
         #endregion
 
-        #region Method: Save()
+            #region Method: Save()
         /// <summary>
         /// Save // Book is saved (added to static list)
         /// </summary>
