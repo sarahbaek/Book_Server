@@ -16,7 +16,7 @@ namespace Book_Server
 
         static void Main(string[] args)
         {
-
+            #region Initializing new books 
             Book book1 = new Book("Beauty ", "Maria", 600, "978-0-000-00000-1");
             Book book2 = new Book(" beast", "Carol", 200, "978-0-000-00000-2");
             Book book3 = new Book("Cars", "Andreas", 400, "978-0-000-00000-3");
@@ -25,9 +25,10 @@ namespace Book_Server
             data.Add(book2);
             data.Add(book3);
             data.Add(book4);
+            #endregion
 
+            #region Server
             Console.WriteLine("This is the Book Server");
-
             TcpListener listener = new TcpListener(System.Net.IPAddress.Any, 4646);
             listener.Start();
 
@@ -37,9 +38,14 @@ namespace Book_Server
                 Console.WriteLine("Incoming client");
                 Task.Run((() => { HandleClient(socket); }));
             }
-
+            #endregion
         }
 
+        #region Method: HandleClient()
+        /// <summary>
+        /// Here we handle all the requests coming from the client, like when the client asks to see what is in the server, tries to get a secific item or tries to save an item
+        /// </summary>
+        /// <param name="socket"></param>
         private static void HandleClient(TcpClient socket)
         {
             NetworkStream ns = socket.GetStream();
@@ -51,7 +57,9 @@ namespace Book_Server
 
             if (firstLineMessage == "GetAll")
             {
-                writer.WriteLine(GetAll());
+                var tempString = GetAll();
+                Console.WriteLine(tempString);
+                writer.WriteLine(tempString);
             }
 
             if (firstLineMessage == "Get")
@@ -63,17 +71,15 @@ namespace Book_Server
             {
                 Save(secondLineMessage);
             }
-            //Book FromJsonBook = JsonSerializer.Deserialize<Book>(data);
 
-            //Console.WriteLine("Client sent:" + FromJsonBook.Title + FromJsonBook.Author + FromJsonBook.PageNumber + FromJsonBook.ISBN13);
-
-            writer.WriteLine($"Incoming client message: {firstLineMessage}   {secondLineMessage}");
             writer.Flush();
             socket.Close();
 
         }
 
+        #endregion
 
+        #region Method: Get ALL()
         //Handles the information coming from the client
         /// <summary>
         /// GetAll returns a list of books as a JsonString,     //GetAll //all books from the server, line two is empty e.g. Retrieve All
@@ -85,13 +91,14 @@ namespace Book_Server
 
             return serializedData;
         }
+        #endregion
 
-
-
-        ///// Get - takes in an ISBN!3 string and returns a book as a JsonString
-        ///// </summary>
-        ///// <param name="in_ISBN13"></param>
-        ///// <returns>Returns a Json string</returns>
+        #region Method: Get()
+        /// <summary>
+        /// Get - takes in an ISBN!3 string and returns a book as a JsonString
+        /// </summary>
+        /// <param name="incoming_ISBN13"></param>
+        /// <returns>Returns a Json string</returns>
         public static string Get(string incomingISBN13)
         {
             Book searchedBook = data.Find(book => book.ISBN13.Equals(incomingISBN13));
@@ -99,17 +106,22 @@ namespace Book_Server
 
             return serializedJsonData;
         }
+        #endregion
 
-        ///// <summary>
-        ///// Save // Book is saved (added to static list)
-        ///// </summary>
-        ///// <param name="in_newBook" >{"Title": "UML", "Author": "Larman", "Page Number": 654, "ISBN13:" 9780133594140 "”} Book is saved like json</param>
+        #region Method: Save()
+        /// <summary>
+        /// Save // Book is saved (added to static list)
+        /// </summary>
+        /// <param name="inNewJsonBook" >{"Title": "UML", "Author": "Larman", "Page Number": 654, "ISBN13:" 9780133594140 "”} Book is saved like json</param>
 
-        public static void Save(string  inNewJsonBook)
+        public static void Save(string inNewJsonBook)
         {
             Book saveDeserializedBook = JsonSerializer.Deserialize<Book>(inNewJsonBook);
             data.Add(saveDeserializedBook);
         }
+
+        #endregion
+
     }
 
 }
